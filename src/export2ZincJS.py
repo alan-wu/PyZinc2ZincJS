@@ -24,6 +24,8 @@ class PyZinc2ZincJS:
         self.readMesh()
         '''Create surface graphics which will be viewed and exported'''
         self.createSurfaceGraphics()
+        '''Create glyph graphics which will be viewed and exported'''
+        self.createGlyphGraphics()
         '''Export To ZincJS format'''
         self.exportWebGLJson()
         '''Export graphics into JSON format'''
@@ -98,6 +100,27 @@ class PyZinc2ZincJS:
         surface.setTessellation(tessellation)
         ''' Setting exterior only should reduce export size without compromising quality '''
         surface.setExterior(True)
+        # Let the scene render the scene.
+        scene.endChange()
+        # createSurfaceGraphics end
+
+    def createGlyphGraphics(self):
+        '''
+        Create the glyph graphics using the finite element field 'coordinates'.
+        '''
+        material_module = self._context.getMaterialmodule()
+        scene = self._default_region.getScene()
+        fieldmodule = self._default_region.getFieldmodule()
+        scene.beginChange()
+        glyph = scene.createGraphicsPoints()
+        glyph.setFieldDomainType(Field.DOMAIN_TYPE_NODES)
+        finite_element_field = fieldmodule.findFieldByName('coordinates')
+        glyph.setCoordinateField(finite_element_field)
+        pointAttr = glyph.getGraphicspointattributes()
+        label_field = fieldmodule.findFieldByName('cmiss_number')
+        pointAttr.setLabelField(label_field)
+        sphere = self._context.getGlyphmodule().findGlyphByGlyphShapeType(Glyph.SHAPE_TYPE_SPHERE)
+        pointAttr.setGlyph(sphere)
         # Let the scene render the scene.
         scene.endChange()
         # createSurfaceGraphics end
