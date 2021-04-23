@@ -50,8 +50,6 @@ class PyZinc2ZincJS:
             filename = 'models/something{:0>4}.exnode'.format(i)
             fr = sir.createStreamresourceFile(filename)
             sir.setResourceAttributeReal(fr, sir.ATTRIBUTE_TIME, i/self._numberOfTimeSteps)
-        handle = sir.createStreamresourceMemoryBuffer(mystring)
-        sir.setResourceDataCompressionType(handle, sir.DATA_COMPRESSION_TYPE_GZIP)
         self._default_region.read(sir)
         
     def exportWebGLJson(self):
@@ -63,7 +61,7 @@ class PyZinc2ZincJS:
         sceneSR = scene.createStreaminformationScene()
         sceneSR.setIOFormat(sceneSR.IO_FORMAT_THREEJS)
         '''
-        output 51 frames of the deforming heart between time 0 to 1,
+        output frames of the deforming heart between time 0 to 1,
         this matches the number of frame we have read in previously
         '''
         sceneSR.setNumberOfTimeSteps(self._numberOfTimeSteps)
